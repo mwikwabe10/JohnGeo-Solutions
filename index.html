@@ -51,6 +51,7 @@
 
     --white:#F4F8FA;
     --white-soft:#D8E4E8;
+
     --muted:#9CB0BA;
     --muted-dark:#718893;
 
@@ -175,7 +176,9 @@ body::before{
 
     pointer-events:none;
 
-    opacity:.35;
+    opacity:.22;
+
+    z-index:2;
 
     background-image:
         linear-gradient(
@@ -194,7 +197,7 @@ body::before{
         linear-gradient(
             to bottom,
             black,
-            transparent 85%
+            transparent 80%
         );
 }
 
@@ -222,6 +225,7 @@ body::before{
 }
 
 .section-dark{
+
     background:
         linear-gradient(
             180deg,
@@ -385,7 +389,7 @@ header{
     padding:10px 5%;
 
     background:
-        rgba(6,21,34,.88);
+        rgba(6,21,34,.80);
 
     backdrop-filter:blur(18px);
 
@@ -565,7 +569,7 @@ nav a.active::after{
 
         overflow:hidden;
 
-        background:rgba(6,21,34,.98);
+        background:rgba(6,21,34,.97);
 
         backdrop-filter:blur(20px);
 
@@ -612,14 +616,16 @@ nav a.active::after{
     overflow:hidden;
 
     padding:
-        130px 6%
+        120px 6%
         90px;
 
-    background:var(--navy-950);
+    background:#071722;
 }
 
 
-/* VIDEO */
+/* =========================================================
+   HERO VIDEO
+========================================================= */
 
 .hero-media{
 
@@ -631,7 +637,7 @@ nav a.active::after{
 
     overflow:hidden;
 
-    background:var(--navy-950);
+    background:#071722;
 }
 
 .hero-media video{
@@ -648,15 +654,33 @@ nav a.active::after{
 
     object-fit:cover;
 
-    transform:translate(-50%,-50%);
+    transform:
+        translate(-50%,-50%)
+        scale(1.02);
 
     pointer-events:none;
 
-    opacity:.62;
+    opacity:.92;
+
+    filter:
+        saturate(1.08)
+        contrast(1.04)
+        brightness(.92);
+
+    animation:
+        heroVideoReveal 1.8s ease-out both;
 }
 
 
-/* VIDEO OVERLAY */
+/* =========================================================
+   HERO VIDEO CINEMATIC OVERLAY
+========================================================= */
+
+/*
+   IMPORTANT:
+   The old overlay was extremely dark.
+   This version keeps the video visible.
+*/
 
 .hero-media::after{
 
@@ -668,18 +692,93 @@ nav a.active::after{
 
     background:
 
+        /* subtle overall tint */
         linear-gradient(
             90deg,
-            rgba(6,21,34,.94) 0%,
-            rgba(6,21,34,.72) 45%,
-            rgba(6,21,34,.42) 100%
+            rgba(4,15,23,.48) 0%,
+            rgba(4,15,23,.18) 42%,
+            rgba(4,15,23,.08) 100%
         ),
 
+        /* protects text */
         linear-gradient(
-            180deg,
-            rgba(6,21,34,.25),
-            rgba(6,21,34,.82)
+            90deg,
+            rgba(4,15,23,.55) 0%,
+            rgba(4,15,23,.22) 34%,
+            transparent 68%
+        ),
+
+        /* subtle bottom fade */
+        linear-gradient(
+            0deg,
+            rgba(4,15,23,.52) 0%,
+            transparent 35%
         );
+
+    z-index:1;
+
+    pointer-events:none;
+}
+
+
+/* =========================================================
+   HERO VIDEO EDGE GLOW
+========================================================= */
+
+#home::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:1;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at 78% 42%,
+            rgba(43,155,134,.10),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 60% 20%,
+            rgba(46,145,183,.08),
+            transparent 30%
+        );
+
+    mix-blend-mode:screen;
+}
+
+
+/* =========================================================
+   VIDEO ANIMATION
+========================================================= */
+
+@keyframes heroVideoReveal{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(1.06);
+
+    }
+
+    to{
+
+        opacity:.92;
+
+        transform:
+            translate(-50%,-50%)
+            scale(1.02);
+
+    }
+
 }
 
 
@@ -693,9 +792,9 @@ nav a.active::after{
 
     inset:0;
 
-    z-index:1;
+    z-index:2;
 
-    opacity:.25;
+    opacity:.18;
 
     pointer-events:none;
 }
@@ -755,7 +854,7 @@ nav a.active::after{
 
     position:relative;
 
-    z-index:3;
+    z-index:4;
 
     width:100%;
 
@@ -766,8 +865,46 @@ nav a.active::after{
 
 .hero-copy{
 
-    max-width:760px;
+    max-width:790px;
+
+    position:relative;
 }
+
+
+/*
+   Soft text readability layer.
+   This replaces the need for a dark full-screen overlay.
+*/
+
+.hero-copy::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:-80px;
+
+    top:-90px;
+
+    width:850px;
+
+    height:620px;
+
+    z-index:-1;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(4,15,23,.62) 0%,
+            rgba(4,15,23,.32) 42%,
+            transparent 72%
+        );
+
+    filter:blur(20px);
+}
+
 
 .coord-stamp{
 
@@ -780,10 +917,14 @@ nav a.active::after{
     padding:7px 13px;
 
     border:1px solid
-        rgba(228,182,110,.35);
+        rgba(228,182,110,.45);
 
     background:
-        rgba(6,21,34,.38);
+        rgba(5,18,27,.48);
+
+    backdrop-filter:blur(8px);
+
+    -webkit-backdrop-filter:blur(8px);
 
     border-radius:30px;
 
@@ -828,18 +969,24 @@ nav a.active::after{
     letter-spacing:-.045em;
 
     margin-bottom:25px;
+
+    text-shadow:
+        0 4px 25px rgba(0,0,0,.48);
 }
 
 .hero-copy h2 span{
 
     color:var(--gold-light);
+
+    text-shadow:
+        0 4px 20px rgba(0,0,0,.35);
 }
 
 .hero-copy .lede{
 
     max-width:650px;
 
-    color:#B8C9D0;
+    color:#D2DEE2;
 
     font-size:
         clamp(
@@ -851,6 +998,9 @@ nav a.active::after{
     line-height:1.7;
 
     margin-bottom:35px;
+
+    text-shadow:
+        0 2px 15px rgba(0,0,0,.55);
 }
 
 
@@ -895,7 +1045,8 @@ nav a.active::after{
         transform .25s ease,
         background .25s ease,
         border-color .25s ease,
-        color .25s ease;
+        color .25s ease,
+        box-shadow .25s ease;
 }
 
 .btn:hover{
@@ -914,7 +1065,7 @@ nav a.active::after{
         );
 
     box-shadow:
-        0 10px 30px rgba(201,149,77,.18);
+        0 10px 30px rgba(201,149,77,.25);
 }
 
 .btn-primary:hover{
@@ -925,6 +1076,9 @@ nav a.active::after{
             #F0C983,
             var(--gold-light)
         );
+
+    box-shadow:
+        0 14px 35px rgba(201,149,77,.35);
 }
 
 .btn-outline{
@@ -932,16 +1086,23 @@ nav a.active::after{
     color:var(--white);
 
     background:
-        rgba(255,255,255,.04);
+        rgba(5,18,27,.32);
+
+    backdrop-filter:blur(8px);
+
+    -webkit-backdrop-filter:blur(8px);
 
     border-color:
-        rgba(216,228,232,.25);
+        rgba(255,255,255,.40);
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.15);
 }
 
 .btn-outline:hover{
 
     background:
-        rgba(46,145,183,.13);
+        rgba(46,145,183,.22);
 
     border-color:
         var(--blue-light);
@@ -963,14 +1124,23 @@ nav a.active::after{
 
     margin-top:70px;
 
-    border-top:1px solid var(--line);
+    border-top:1px solid
+        rgba(255,255,255,.22);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(4,15,23,.24),
+            transparent
+        );
 }
 
 .hero-stat{
 
     padding:20px 20px 0 0;
 
-    border-right:1px solid var(--line);
+    border-right:1px solid
+        rgba(255,255,255,.18);
 
     margin-right:20px;
 }
@@ -993,13 +1163,16 @@ nav a.active::after{
     font-size:1.5rem;
 
     line-height:1.1;
+
+    text-shadow:
+        0 2px 15px rgba(0,0,0,.5);
 }
 
 .hero-stat span{
 
     display:block;
 
-    color:var(--muted);
+    color:#D0DDE1;
 
     font-family:var(--mono);
 
@@ -1010,7 +1183,11 @@ nav a.active::after{
     letter-spacing:.08em;
 
     margin-top:7px;
+
+    text-shadow:
+        0 2px 10px rgba(0,0,0,.6);
 }
+
 
 @media(max-width:700px){
 
@@ -1025,6 +1202,42 @@ nav a.active::after{
 
     .hero-copy h2{
         font-size:2.8rem;
+    }
+
+    .hero-copy::before{
+
+        left:-50px;
+
+        width:500px;
+
+        height:600px;
+    }
+
+    .hero-media video{
+
+        opacity:.80;
+
+        filter:
+            saturate(1.05)
+            contrast(1.02)
+            brightness(.75);
+    }
+
+    .hero-media::after{
+
+        background:
+
+            linear-gradient(
+                90deg,
+                rgba(4,15,23,.58),
+                rgba(4,15,23,.25)
+            ),
+
+            linear-gradient(
+                0deg,
+                rgba(4,15,23,.60),
+                transparent 50%
+            );
     }
 
     .hero-stats{
@@ -1046,7 +1259,8 @@ nav a.active::after{
 
         border-right:0;
 
-        border-bottom:1px solid var(--line);
+        border-bottom:1px solid
+            rgba(255,255,255,.16);
     }
 
 }
@@ -2523,7 +2737,9 @@ footer p{
     }
 
     .hero-media video{
+
         animation:none;
+
     }
 
     *,
@@ -2606,7 +2822,6 @@ footer p{
 </header>
 
 
-
 <!-- =====================================================
      WHATSAPP
 ===================================================== -->
@@ -2624,13 +2839,14 @@ footer p{
 </a>
 
 
-
 <!-- =====================================================
      HERO
 ===================================================== -->
 
 <section id="home">
 
+
+    <!-- VIDEO -->
 
     <div class="hero-media">
 
@@ -2655,8 +2871,12 @@ footer p{
     </div>
 
 
+    <!-- GRID -->
+
     <div class="grid-texture"></div>
 
+
+    <!-- CONTOUR LINES -->
 
     <div class="hero-contours">
 
@@ -2681,6 +2901,8 @@ footer p{
 
     </div>
 
+
+    <!-- HERO CONTENT -->
 
     <div class="hero-inner">
 
@@ -2803,7 +3025,6 @@ footer p{
     </div>
 
 </section>
-
 
 
 <!-- =====================================================
@@ -2997,7 +3218,6 @@ footer p{
 </section>
 
 
-
 <!-- =====================================================
      APPROACH
 ===================================================== -->
@@ -3118,7 +3338,6 @@ footer p{
     </div>
 
 </section>
-
 
 
 <!-- =====================================================
@@ -3324,7 +3543,6 @@ footer p{
 </section>
 
 
-
 <!-- =====================================================
      EXPERTISE
 ===================================================== -->
@@ -3503,7 +3721,6 @@ footer p{
 </section>
 
 
-
 <!-- =====================================================
      PORTFOLIO
 ===================================================== -->
@@ -3538,8 +3755,6 @@ footer p{
 
         <div class="portfolio-grid">
 
-
-            <!-- PROJECT 1 -->
 
             <div
                 class="project-card"
@@ -3587,9 +3802,6 @@ footer p{
             </div>
 
 
-
-            <!-- PROJECT 2 -->
-
             <div
                 class="project-card"
                 tabindex="0"
@@ -3635,9 +3847,6 @@ footer p{
 
             </div>
 
-
-
-            <!-- PROJECT 3 -->
 
             <div
                 class="project-card"
@@ -3685,9 +3894,6 @@ footer p{
             </div>
 
 
-
-            <!-- PROJECT 4 -->
-
             <div
                 class="project-card"
                 tabindex="0"
@@ -3734,9 +3940,6 @@ footer p{
             </div>
 
 
-
-            <!-- PROJECT 5 -->
-
             <div
                 class="project-card"
                 tabindex="0"
@@ -3782,9 +3985,6 @@ footer p{
 
             </div>
 
-
-
-            <!-- PROJECT 6 -->
 
             <div
                 class="project-card"
@@ -3839,7 +4039,6 @@ footer p{
 </section>
 
 
-
 <!-- =====================================================
      LIGHTBOX
 ===================================================== -->
@@ -3869,7 +4068,6 @@ footer p{
 </div>
 
 
-
 <!-- =====================================================
      CTA
 ===================================================== -->
@@ -3880,8 +4078,10 @@ footer p{
 
         <div>
 
-            <div class="eyebrow"
-                 style="justify-content:flex-start;">
+            <div
+                class="eyebrow"
+                style="justify-content:flex-start;"
+            >
 
                 PROJECT INQUIRY
 
@@ -3917,7 +4117,6 @@ footer p{
     </div>
 
 </section>
-
 
 
 <!-- =====================================================
@@ -4009,7 +4208,6 @@ footer p{
             </div>
 
 
-
             <div class="form-panel">
 
 
@@ -4097,7 +4295,6 @@ footer p{
 </section>
 
 
-
 <!-- =====================================================
      FOOTER
 ===================================================== -->
@@ -4174,7 +4371,6 @@ footer p{
 </footer>
 
 
-
 <!-- =====================================================
      JAVASCRIPT
 ===================================================== -->
@@ -4222,7 +4418,6 @@ navLinks
         });
 
     });
-
 
 
 /* =========================================================
@@ -4282,7 +4477,6 @@ window.addEventListener(
 );
 
 
-
 /* =========================================================
    SCROLL REVEAL
 ========================================================= */
@@ -4329,7 +4523,6 @@ revealElements.forEach(
     element =>
         revealObserver.observe(element)
 );
-
 
 
 /* =========================================================
@@ -4402,12 +4595,6 @@ function closeLightbox(){
         "modal-open"
     );
 
-    /*
-       Clear the image after the close animation.
-       This also prevents the previous image from
-       remaining visible if another one is opened.
-    */
-
     setTimeout(() => {
 
         if(
@@ -4425,38 +4612,17 @@ function closeLightbox(){
 }
 
 
-/* Click project */
-
 projectCards.forEach(card => {
 
     card.addEventListener(
         "click",
         event => {
 
-            /*
-               If the lightbox is somehow already open,
-               close it instead of stacking another state.
-            */
-
-            if(
-                lightbox.classList.contains(
-                    "active"
-                )
-            ){
-
-                closeLightbox();
-
-                return;
-
-            }
-
             openLightbox(card);
 
         }
     );
 
-
-    /* Keyboard accessibility */
 
     card.addEventListener(
         "keydown",
@@ -4479,14 +4645,6 @@ projectCards.forEach(card => {
 });
 
 
-/*
-   Clicking the enlarged image itself closes it.
-
-   This is the behavior you specifically requested:
-   click once = zoom/open
-   click again = close
-*/
-
 fullImg.addEventListener(
     "click",
     event => {
@@ -4498,10 +4656,6 @@ fullImg.addEventListener(
     }
 );
 
-
-/*
-   Clicking the dark area closes the lightbox.
-*/
 
 lightbox.addEventListener(
     "click",
@@ -4519,10 +4673,6 @@ lightbox.addEventListener(
 );
 
 
-/*
-   Close button.
-*/
-
 lightboxClose.addEventListener(
     "click",
     event => {
@@ -4534,10 +4684,6 @@ lightboxClose.addEventListener(
     }
 );
 
-
-/*
-   Escape key.
-*/
 
 document.addEventListener(
     "keydown",
@@ -4556,7 +4702,6 @@ document.addEventListener(
 
     }
 );
-
 
 
 /* =========================================================
@@ -4595,7 +4740,6 @@ contactForm.addEventListener(
 );
 
 
-
 /* =========================================================
    HERO VIDEO
 ========================================================= */
@@ -4605,12 +4749,6 @@ const heroVideo =
         ".hero-media video"
     );
 
-
-/*
-   Some browsers may prevent autoplay until the
-   video is explicitly muted. This ensures that
-   autoplay remains silent.
-*/
 
 if(heroVideo){
 
@@ -4628,9 +4766,9 @@ if(heroVideo){
             .catch(() => {
 
                 /*
-                   Autoplay may be blocked by
-                   the browser. The website still
-                   works normally without it.
+                   Browser autoplay protection.
+                   The rest of the website continues
+                   working normally.
                 */
 
             });
@@ -4658,6 +4796,7 @@ if(heroVideo){
     );
 
 }
+
 
 /* =========================================================
    INITIAL NAV UPDATE
