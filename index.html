@@ -1213,14 +1213,34 @@ nav a.active::after{
         height:600px;
     }
 
+    /*
+       MOBILE VIDEO FIX
+       Keep the video visible on smaller screens.
+       Some mobile browsers reduce/disable autoplay, so
+       the CSS fallback background remains visible until
+       playback starts.
+    */
+    .hero-media{
+        background:
+            radial-gradient(
+                circle at 72% 32%,
+                rgba(43,155,134,.22),
+                transparent 32%
+            ),
+            linear-gradient(
+                135deg,
+                #0A2637 0%,
+                #071722 55%,
+                #0B2437 100%
+            );
+    }
+
     .hero-media video{
-
-        opacity:.80;
-
+        opacity:1;
         filter:
-            saturate(1.05)
-            contrast(1.02)
-            brightness(.75);
+            saturate(1.08)
+            contrast(1.03)
+            brightness(.92);
     }
 
     .hero-media::after{
@@ -1229,14 +1249,14 @@ nav a.active::after{
 
             linear-gradient(
                 90deg,
-                rgba(4,15,23,.58),
-                rgba(4,15,23,.25)
+                rgba(4,15,23,.38),
+                rgba(4,15,23,.12)
             ),
 
             linear-gradient(
                 0deg,
-                rgba(4,15,23,.60),
-                transparent 50%
+                rgba(4,15,23,.42),
+                transparent 55%
             );
     }
 
@@ -2700,6 +2720,19 @@ footer p{
 
 @media(max-width:600px){
 
+    .hero-media,
+    .hero-media video{
+        width:100%;
+        height:100%;
+        min-width:100%;
+        min-height:100%;
+    }
+
+    .hero-media video{
+        object-fit:cover;
+        object-position:center center;
+    }
+
     .section{
         padding:78px 6%;
     }
@@ -2855,10 +2888,12 @@ footer p{
             muted
             loop
             playsinline
+            webkit-playsinline
             preload="auto"
             disablepictureinpicture
             controlslist="nodownload nofullscreen noremoteplayback"
             aria-hidden="true"
+            tabindex="-1"
         >
 
             <source
@@ -4752,33 +4787,105 @@ const heroVideo =
 
 if(heroVideo){
 
+    /*
+       MOBILE / IOS / ANDROID VIDEO FIX
+       --------------------------------
+       Autoplay is allowed only when the video is muted.
+       We explicitly set every relevant property before
+       attempting playback, then retry when the browser
+       becomes ready or the user interacts with the page.
+    */
+
     heroVideo.muted = true;
+    heroVideo.defaultMuted = true;
 
-    heroVideo.setAttribute(
-        "muted",
-        ""
-    );
-
+    heroVideo.setAttribute("muted", "");
+    heroVideo.setAttribute("playsinline", "");
+    heroVideo.setAttribute("webkit-playsinline", "");
 
     const playVideo = () => {
 
-        heroVideo.play()
-            .catch(() => {
+        if(
+            document.visibilityState !== "visible"
+        ){
+            return;
+        }
 
+        heroVideo.muted = true;
+
+        const promise = heroVideo.play();
+
+        if(promise !== undefined){
+
+            promise.catch(() => {
                 /*
-                   Browser autoplay protection.
-                   The rest of the website continues
-                   working normally.
+                   Some mobile browsers require a user
+                   gesture before starting media. We retry
+                   below on touch/pointer/scroll interaction.
                 */
-
             });
+
+        }
 
     };
 
 
+    /*
+       Try immediately.
+    */
     playVideo();
 
 
+    /*
+       Try again when enough video data is available.
+    */
+    heroVideo.addEventListener(
+        "loadedmetadata",
+        playVideo,
+        {once:true}
+    );
+
+    heroVideo.addEventListener(
+        "canplay",
+        playVideo,
+        {once:true}
+    );
+
+
+    /*
+       Retry after the first real user interaction.
+       This handles mobile browsers that block the
+       initial autoplay attempt.
+    */
+    const resumeVideo = () => {
+
+        playVideo();
+
+    };
+
+    document.addEventListener(
+        "touchstart",
+        resumeVideo,
+        {passive:true, once:true}
+    );
+
+    document.addEventListener(
+        "pointerdown",
+        resumeVideo,
+        {passive:true, once:true}
+    );
+
+    document.addEventListener(
+        "scroll",
+        resumeVideo,
+        {passive:true, once:true}
+    );
+
+
+    /*
+       If the user leaves the tab and comes back,
+       attempt playback again.
+    */
     document.addEventListener(
         "visibilitychange",
         () => {
@@ -4789,6 +4896,30 @@ if(heroVideo){
             ){
 
                 playVideo();
+
+            }
+
+        }
+    );
+
+
+    /*
+       If playback is interrupted, retry once the browser
+       reports that the video can play again.
+    */
+    heroVideo.addEventListener(
+        "pause",
+        () => {
+
+            if(
+                document.visibilityState ===
+                "visible"
+            ){
+
+                setTimeout(
+                    playVideo,
+                    150
+                );
 
             }
 
