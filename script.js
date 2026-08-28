@@ -1,19 +1,14 @@
 /* =========================================================
    HERO VIDEO
-   DESKTOP + LIGHTWEIGHT MOBILE VERSION
+   OPTIMIZED FOR DESKTOP + MOBILE
 ========================================================= */
 
 const heroVideo =
     document.getElementById("hero-video");
 
-
 if (heroVideo) {
 
-    /* -----------------------------------------------------
-       DETECT DEVICE
-    ----------------------------------------------------- */
-
-    const isMobile =
+    const mobile =
         window.matchMedia("(max-width: 768px)").matches;
 
 
@@ -21,43 +16,27 @@ if (heroVideo) {
        SELECT VIDEO
     ----------------------------------------------------- */
 
-    const selectedVideo = isMobile
+    heroVideo.src = mobile
         ? "hero-video-mobile.mp4"
         : "hero-video.mp4";
 
 
     /* -----------------------------------------------------
-       VIDEO SETTINGS
+       MOBILE-SAFE SETTINGS
     ----------------------------------------------------- */
 
     heroVideo.muted = true;
     heroVideo.defaultMuted = true;
-    heroVideo.playsInline = true;
     heroVideo.autoplay = true;
     heroVideo.loop = true;
+    heroVideo.playsInline = true;
     heroVideo.controls = false;
 
 
-    heroVideo.setAttribute(
-        "muted",
-        ""
-    );
-
-    heroVideo.setAttribute(
-        "autoplay",
-        ""
-    );
-
-    heroVideo.setAttribute(
-        "loop",
-        ""
-    );
-
-    heroVideo.setAttribute(
-        "playsinline",
-        ""
-    );
-
+    heroVideo.setAttribute("muted", "");
+    heroVideo.setAttribute("autoplay", "");
+    heroVideo.setAttribute("loop", "");
+    heroVideo.setAttribute("playsinline", "");
     heroVideo.setAttribute(
         "webkit-playsinline",
         ""
@@ -65,92 +44,56 @@ if (heroVideo) {
 
 
     /* -----------------------------------------------------
-       LOAD CORRECT VIDEO
+       LOAD VIDEO
     ----------------------------------------------------- */
-
-    heroVideo.src = selectedVideo;
 
     heroVideo.load();
 
 
     /* -----------------------------------------------------
-       START VIDEO
+       START ONCE VIDEO IS READY
     ----------------------------------------------------- */
 
-    function playHeroVideo() {
-
-        if (
-            document.visibilityState !==
-            "visible"
-        ) {
-            return;
-        }
-
+    const startVideo = () => {
 
         heroVideo.muted = true;
 
+        heroVideo.play().catch(() => {
+            /*
+               Autoplay can be blocked by some browsers.
+               Do not repeatedly force playback.
+            */
+        });
 
-        const playPromise =
-            heroVideo.play();
-
-
-        if (
-            playPromise !== undefined
-        ) {
-
-            playPromise.catch(() => {
-
-                /*
-                   Autoplay may be blocked by
-                   the mobile browser.
-
-                   We do not continuously retry.
-                */
-
-            });
-
-        }
-
-    }
-
-
-    /* -----------------------------------------------------
-       START WHEN VIDEO IS READY
-    ----------------------------------------------------- */
-
-    if (
-        heroVideo.readyState >= 2
-    ) {
-
-        playHeroVideo();
-
-    } else {
-
-        heroVideo.addEventListener(
-            "loadeddata",
-            playHeroVideo,
-            {
-                once: true
-            }
-        );
-
-    }
+    };
 
 
     heroVideo.addEventListener(
         "canplay",
-        playHeroVideo,
-        {
-            once: true
-        }
+        startVideo,
+        { once: true }
+    );
+
+
+    heroVideo.addEventListener(
+        "loadeddata",
+        startVideo,
+        { once: true }
     );
 
 
     /* -----------------------------------------------------
-       MOBILE USER-INTERACTION FALLBACK
+       INITIAL ATTEMPT
     ----------------------------------------------------- */
 
-    const resumeHeroVideo = () => {
+    startVideo();
+
+
+    /* -----------------------------------------------------
+       USER INTERACTION FALLBACK
+    ----------------------------------------------------- */
+
+    const resumeVideo = () => {
 
         if (
             heroVideo.paused &&
@@ -168,17 +111,7 @@ if (heroVideo) {
 
     document.addEventListener(
         "touchstart",
-        resumeHeroVideo,
-        {
-            passive: true,
-            once: true
-        }
-    );
-
-
-    document.addEventListener(
-        "pointerdown",
-        resumeHeroVideo,
+        resumeVideo,
         {
             passive: true,
             once: true
@@ -187,7 +120,7 @@ if (heroVideo) {
 
 
     /* -----------------------------------------------------
-       PAGE VISIBILITY
+       RETURNING TO PAGE
     ----------------------------------------------------- */
 
     document.addEventListener(
@@ -206,30 +139,11 @@ if (heroVideo) {
 
                     heroVideo.muted = true;
 
-                    heroVideo
-                        .play()
-                        .catch(() => {});
+                    heroVideo.play().catch(() => {});
 
                 }
 
             }
-
-        }
-    );
-
-
-    /* -----------------------------------------------------
-       VIDEO ERROR
-    ----------------------------------------------------- */
-
-    heroVideo.addEventListener(
-        "error",
-        () => {
-
-            console.warn(
-                "JohnGeo hero video failed to load:",
-                selectedVideo
-            );
 
         }
     );
