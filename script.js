@@ -1,33 +1,24 @@
-<script>
-
-
 /* =========================================================
    MOBILE MENU
 ========================================================= */
 
-const menuToggle =
-    document.getElementById("mobile-menu");
+const menuToggle = document.getElementById("mobile-menu");
+const navLinks = document.getElementById("nav-links");
 
-const navLinks =
-    document.getElementById("nav-links");
+if (menuToggle && navLinks) {
 
+    menuToggle.addEventListener("click", () => {
 
-menuToggle.addEventListener("click", () => {
+        const open = navLinks.classList.toggle("active");
 
-    const open =
-        navLinks.classList.toggle("active");
+        menuToggle.setAttribute(
+            "aria-expanded",
+            String(open)
+        );
 
-    menuToggle.setAttribute(
-        "aria-expanded",
-        String(open)
-    );
+    });
 
-});
-
-
-navLinks
-    .querySelectorAll("a")
-    .forEach(link => {
+    navLinks.querySelectorAll("a").forEach(link => {
 
         link.addEventListener("click", () => {
 
@@ -42,61 +33,44 @@ navLinks
 
     });
 
+}
+
 
 /* =========================================================
    ACTIVE NAVIGATION
 ========================================================= */
 
-const sections =
-    document.querySelectorAll(
-        "section[id]"
-    );
+const sections = document.querySelectorAll("section[id]");
+const navAnchors = document.querySelectorAll("nav a");
 
-const navAnchors =
-    document.querySelectorAll(
-        "nav a"
-    );
-
-
-function updateActiveNav(){
+function updateActiveNav() {
 
     let current = "home";
-
-    const scrollPosition =
-        window.scrollY + 180;
+    const scrollPosition = window.scrollY + 180;
 
     sections.forEach(section => {
 
-        if(
-            scrollPosition >=
-            section.offsetTop
-        ){
-
-            current =
-                section.id;
-
+        if (scrollPosition >= section.offsetTop) {
+            current = section.id;
         }
 
     });
-
 
     navAnchors.forEach(anchor => {
 
         anchor.classList.toggle(
             "active",
-            anchor.getAttribute("href") ===
-            "#" + current
+            anchor.getAttribute("href") === "#" + current
         );
 
     });
 
 }
 
-
 window.addEventListener(
     "scroll",
     updateActiveNav,
-    {passive:true}
+    { passive: true }
 );
 
 
@@ -104,26 +78,19 @@ window.addEventListener(
    SCROLL REVEAL
 ========================================================= */
 
-const revealElements =
-    document.querySelectorAll(
-        ".reveal"
-    );
+const revealElements = document.querySelectorAll(".reveal");
 
+if ("IntersectionObserver" in window) {
 
-const revealObserver =
-    new IntersectionObserver(
+    const revealObserver = new IntersectionObserver(
 
         entries => {
 
             entries.forEach(entry => {
 
-                if(
-                    entry.isIntersecting
-                ){
+                if (entry.isIntersecting) {
 
-                    entry.target.classList.add(
-                        "in"
-                    );
+                    entry.target.classList.add("in");
 
                     revealObserver.unobserve(
                         entry.target
@@ -136,60 +103,51 @@ const revealObserver =
         },
 
         {
-            threshold:.12
+            threshold: 0.12
         }
 
     );
 
+    revealElements.forEach(element => {
+        revealObserver.observe(element);
+    });
 
-revealElements.forEach(
-    element =>
-        revealObserver.observe(element)
-);
+} else {
+
+    revealElements.forEach(element => {
+        element.classList.add("in");
+    });
+
+}
 
 
 /* =========================================================
    PORTFOLIO LIGHTBOX
 ========================================================= */
 
-const lightbox =
-    document.getElementById(
-        "lightbox"
-    );
-
-const fullImg =
-    document.getElementById(
-        "full-img"
-    );
-
-const lightboxClose =
-    document.getElementById(
-        "lightbox-close"
-    );
-
-const projectCards =
-    document.querySelectorAll(
-        ".project-card"
-    );
+const lightbox = document.getElementById("lightbox");
+const fullImg = document.getElementById("full-img");
+const lightboxClose = document.getElementById("lightbox-close");
+const projectCards = document.querySelectorAll(".project-card");
 
 
-function openLightbox(card){
+function openLightbox(card) {
 
-    const imageURL =
-        card.dataset.image;
+    if (!lightbox || !fullImg) {
+        return;
+    }
 
-    const image =
-        card.querySelector("img");
+    const imageURL = card.dataset.image;
+    const image = card.querySelector("img");
 
-    fullImg.src =
-        imageURL || image.src;
+    if (!image) {
+        return;
+    }
 
-    fullImg.alt =
-        image.alt;
+    fullImg.src = imageURL || image.src;
+    fullImg.alt = image.alt || "";
 
-    lightbox.classList.add(
-        "active"
-    );
+    lightbox.classList.add("active");
 
     lightbox.setAttribute(
         "aria-hidden",
@@ -203,11 +161,13 @@ function openLightbox(card){
 }
 
 
-function closeLightbox(){
+function closeLightbox() {
 
-    lightbox.classList.remove(
-        "active"
-    );
+    if (!lightbox || !fullImg) {
+        return;
+    }
+
+    lightbox.classList.remove("active");
 
     lightbox.setAttribute(
         "aria-hidden",
@@ -220,17 +180,11 @@ function closeLightbox(){
 
     setTimeout(() => {
 
-        if(
-            !lightbox.classList.contains(
-                "active"
-            )
-        ){
-
+        if (!lightbox.classList.contains("active")) {
             fullImg.src = "";
-
         }
 
-    },250);
+    }, 250);
 
 }
 
@@ -239,25 +193,21 @@ projectCards.forEach(card => {
 
     card.addEventListener(
         "click",
-        event => {
-
+        () => {
             openLightbox(card);
-
         }
     );
-
 
     card.addEventListener(
         "keydown",
         event => {
 
-            if(
+            if (
                 event.key === "Enter" ||
                 event.key === " "
-            ){
+            ) {
 
                 event.preventDefault();
-
                 openLightbox(card);
 
             }
@@ -268,56 +218,61 @@ projectCards.forEach(card => {
 });
 
 
-fullImg.addEventListener(
-    "click",
-    event => {
+if (fullImg) {
 
-        event.stopPropagation();
+    fullImg.addEventListener(
+        "click",
+        event => {
 
-        closeLightbox();
-
-    }
-);
-
-
-lightbox.addEventListener(
-    "click",
-    event => {
-
-        if(
-            event.target === lightbox
-        ){
-
+            event.stopPropagation();
             closeLightbox();
 
         }
+    );
 
-    }
-);
+}
 
 
-lightboxClose.addEventListener(
-    "click",
-    event => {
+if (lightbox) {
 
-        event.stopPropagation();
+    lightbox.addEventListener(
+        "click",
+        event => {
 
-        closeLightbox();
+            if (event.target === lightbox) {
+                closeLightbox();
+            }
 
-    }
-);
+        }
+    );
+
+}
+
+
+if (lightboxClose) {
+
+    lightboxClose.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+            closeLightbox();
+
+        }
+    );
+
+}
 
 
 document.addEventListener(
     "keydown",
     event => {
 
-        if(
+        if (
             event.key === "Escape" &&
-            lightbox.classList.contains(
-                "active"
-            )
-        ){
+            lightbox &&
+            lightbox.classList.contains("active")
+        ) {
 
             closeLightbox();
 
@@ -332,158 +287,182 @@ document.addEventListener(
 ========================================================= */
 
 const contactForm =
-    document.getElementById(
-        "contact-form"
-    );
+    document.getElementById("contact-form");
 
 const formStatus =
-    document.getElementById(
-        "form-status"
+    document.getElementById("form-status");
+
+if (contactForm) {
+
+    contactForm.addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+            if (formStatus) {
+
+                formStatus.textContent =
+                    "Thanks — your project inquiry has been recorded. We'll get back to you shortly.";
+
+                formStatus.classList.add("show");
+
+            }
+
+            contactForm.reset();
+
+        }
     );
 
-
-contactForm.addEventListener(
-    "submit",
-    function(event){
-
-        event.preventDefault();
-
-
-        formStatus.textContent =
-            "Thanks — your project inquiry has been recorded. We'll get back to you shortly.";
-
-        formStatus.classList.add(
-            "show"
-        );
-
-
-        contactForm.reset();
-
-    }
-);
+}
 
 
 /* =========================================================
    HERO VIDEO
+   STABLE DESKTOP + MOBILE VERSION
 ========================================================= */
 
 const heroVideo =
-    document.querySelector(
-        ".hero-media video"
-    );
+    document.getElementById("hero-video");
 
+if (heroVideo) {
 
-if(heroVideo){
-
-    /*
-       MOBILE / IOS / ANDROID VIDEO FIX
-       --------------------------------
-       Autoplay is allowed only when the video is muted.
-       We explicitly set every relevant property before
-       attempting playback, then retry when the browser
-       becomes ready or the user interacts with the page.
-    */
+    /* -----------------------------------------------------
+       VIDEO SETTINGS
+    ----------------------------------------------------- */
 
     heroVideo.muted = true;
     heroVideo.defaultMuted = true;
+    heroVideo.playsInline = true;
+    heroVideo.controls = false;
 
     heroVideo.setAttribute("muted", "");
     heroVideo.setAttribute("playsinline", "");
     heroVideo.setAttribute("webkit-playsinline", "");
 
-    const playVideo = () => {
 
-        if(
+    /* -----------------------------------------------------
+       VIDEO STATE
+    ----------------------------------------------------- */
+
+    let videoStarted = false;
+    let userHasInteracted = false;
+
+
+    /* -----------------------------------------------------
+       START VIDEO
+    ----------------------------------------------------- */
+
+    function startHeroVideo() {
+
+        if (
             document.visibilityState !== "visible"
-        ){
+        ) {
+            return;
+        }
+
+        if (videoStarted) {
             return;
         }
 
         heroVideo.muted = true;
 
-        const promise = heroVideo.play();
+        const playPromise = heroVideo.play();
 
-        if(promise !== undefined){
+        if (playPromise !== undefined) {
 
-            promise.catch(() => {
-                /*
-                   Some mobile browsers require a user
-                   gesture before starting media. We retry
-                   below on touch/pointer/scroll interaction.
-                */
-            });
+            playPromise
+                .then(() => {
+
+                    videoStarted = true;
+
+                })
+                .catch(() => {
+
+                    videoStarted = false;
+
+                });
 
         }
 
-    };
+    }
 
 
-    /*
-       Try immediately.
-    */
-    playVideo();
+    /* -----------------------------------------------------
+       INITIAL START
+    ----------------------------------------------------- */
+
+    if (heroVideo.readyState >= 3) {
+
+        startHeroVideo();
+
+    } else {
+
+        heroVideo.addEventListener(
+            "canplay",
+            startHeroVideo,
+            { once: true }
+        );
+
+    }
 
 
-    /*
-       Try again when enough video data is available.
-    */
-    heroVideo.addEventListener(
-        "loadedmetadata",
-        playVideo,
-        {once:true}
-    );
+    /* -----------------------------------------------------
+       USER INTERACTION FALLBACK
+    ----------------------------------------------------- */
 
-    heroVideo.addEventListener(
-        "canplay",
-        playVideo,
-        {once:true}
-    );
+    function resumeHeroVideo() {
 
+        userHasInteracted = true;
 
-    /*
-       Retry after the first real user interaction.
-       This handles mobile browsers that block the
-       initial autoplay attempt.
-    */
-    const resumeVideo = () => {
+        if (
+            heroVideo.paused &&
+            !heroVideo.ended
+        ) {
 
-        playVideo();
+            videoStarted = false;
+            startHeroVideo();
 
-    };
+        }
 
-    document.addEventListener(
-        "touchstart",
-        resumeVideo,
-        {passive:true, once:true}
-    );
+    }
+
 
     document.addEventListener(
         "pointerdown",
-        resumeVideo,
-        {passive:true, once:true}
-    );
-
-    document.addEventListener(
-        "scroll",
-        resumeVideo,
-        {passive:true, once:true}
+        resumeHeroVideo,
+        {
+            passive: true,
+            once: true
+        }
     );
 
 
-    /*
-       If the user leaves the tab and comes back,
-       attempt playback again.
-    */
+    /* -----------------------------------------------------
+       PAGE VISIBILITY
+    ----------------------------------------------------- */
+
     document.addEventListener(
         "visibilitychange",
         () => {
 
-            if(
-                document.visibilityState ===
-                "visible"
-            ){
+            if (
+                document.visibilityState === "visible"
+            ) {
 
-                playVideo();
+                if (
+                    heroVideo.paused &&
+                    !heroVideo.ended
+                ) {
+
+                    if (userHasInteracted) {
+
+                        videoStarted = false;
+                        startHeroVideo();
+
+                    }
+
+                }
 
             }
 
@@ -491,23 +470,35 @@ if(heroVideo){
     );
 
 
-    /*
-       If playback is interrupted, retry once the browser
-       reports that the video can play again.
-    */
+    /* -----------------------------------------------------
+       VIDEO ERROR HANDLING
+    ----------------------------------------------------- */
+
     heroVideo.addEventListener(
-        "pause",
+        "error",
         () => {
 
-            if(
-                document.visibilityState ===
-                "visible"
-            ){
+            console.warn(
+                "JohnGeo hero video could not be loaded."
+            );
 
-                setTimeout(
-                    playVideo,
-                    150
-                );
+        }
+    );
+
+
+    /* -----------------------------------------------------
+       VIDEO ENDED
+    ----------------------------------------------------- */
+
+    heroVideo.addEventListener(
+        "ended",
+        () => {
+
+            if (!heroVideo.loop) {
+
+                heroVideo.currentTime = 0;
+                videoStarted = false;
+                startHeroVideo();
 
             }
 
@@ -518,14 +509,7 @@ if(heroVideo){
 
 
 /* =========================================================
-   INITIAL NAV UPDATE
+   INITIAL NAVIGATION UPDATE
 ========================================================= */
 
 updateActiveNav();
-
-
-</script>
-
-
-</body>
-</html>
