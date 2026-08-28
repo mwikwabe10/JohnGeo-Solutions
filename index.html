@@ -3233,7 +3233,30 @@ footer p{
         preload="auto"
         aria-hidden="true"
         tabindex="-1"
-    ></video>
+        disablepictureinpicture
+    >
+
+        <!-- Desktop video -->
+        <source
+            src="./hero-video.mp4"
+            type="video/mp4"
+            media="(min-width: 681px)"
+        >
+
+        <!-- Mobile video -->
+        <source
+            src="./hero-video-mobile.mp4"
+            type="video/mp4"
+            media="(max-width: 680px)"
+        >
+
+        <!-- Fallback -->
+        <source
+            src="./hero-video.mp4"
+            type="video/mp4"
+        >
+
+    </video>
 
 </div>
 
