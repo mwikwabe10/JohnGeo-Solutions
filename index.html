@@ -2881,7 +2881,11 @@ footer p{
 
     <!-- VIDEO -->
 
-  <div class="hero-media">
+ <!-- =====================================================
+     HERO VIDEO
+===================================================== -->
+
+<div class="hero-media">
 
     <video
         id="hero-video"
@@ -2890,14 +2894,25 @@ footer p{
         loop
         playsinline
         webkit-playsinline
-        preload="auto"
+        preload="metadata"
         aria-hidden="true"
         tabindex="-1"
     >
+
+        <!-- Desktop -->
         <source
             src="hero-video.mp4"
             type="video/mp4"
+            media="(min-width: 769px)"
         >
+
+        <!-- Mobile -->
+        <source
+            src="hero-video-mobile.mp4"
+            type="video/mp4"
+            media="(max-width: 768px)"
+        >
+
     </video>
 
 </div>
