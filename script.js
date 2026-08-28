@@ -1,331 +1,30 @@
 /* =========================================================
-   MOBILE MENU
-========================================================= */
-
-const menuToggle = document.getElementById("mobile-menu");
-const navLinks = document.getElementById("nav-links");
-
-if (menuToggle && navLinks) {
-
-    menuToggle.addEventListener("click", () => {
-
-        const open = navLinks.classList.toggle("active");
-
-        menuToggle.setAttribute(
-            "aria-expanded",
-            String(open)
-        );
-
-    });
-
-    navLinks.querySelectorAll("a").forEach(link => {
-
-        link.addEventListener("click", () => {
-
-            navLinks.classList.remove("active");
-
-            menuToggle.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-
-        });
-
-    });
-
-}
-
-
-/* =========================================================
-   ACTIVE NAVIGATION
-========================================================= */
-
-const sections = document.querySelectorAll("section[id]");
-const navAnchors = document.querySelectorAll("nav a");
-
-function updateActiveNav() {
-
-    let current = "home";
-    const scrollPosition = window.scrollY + 180;
-
-    sections.forEach(section => {
-
-        if (scrollPosition >= section.offsetTop) {
-            current = section.id;
-        }
-
-    });
-
-    navAnchors.forEach(anchor => {
-
-        anchor.classList.toggle(
-            "active",
-            anchor.getAttribute("href") === "#" + current
-        );
-
-    });
-
-}
-
-window.addEventListener(
-    "scroll",
-    updateActiveNav,
-    { passive: true }
-);
-
-
-/* =========================================================
-   SCROLL REVEAL
-========================================================= */
-
-const revealElements = document.querySelectorAll(".reveal");
-
-if ("IntersectionObserver" in window) {
-
-    const revealObserver = new IntersectionObserver(
-
-        entries => {
-
-            entries.forEach(entry => {
-
-                if (entry.isIntersecting) {
-
-                    entry.target.classList.add("in");
-
-                    revealObserver.unobserve(
-                        entry.target
-                    );
-
-                }
-
-            });
-
-        },
-
-        {
-            threshold: 0.12
-        }
-
-    );
-
-    revealElements.forEach(element => {
-        revealObserver.observe(element);
-    });
-
-} else {
-
-    revealElements.forEach(element => {
-        element.classList.add("in");
-    });
-
-}
-
-
-/* =========================================================
-   PORTFOLIO LIGHTBOX
-========================================================= */
-
-const lightbox = document.getElementById("lightbox");
-const fullImg = document.getElementById("full-img");
-const lightboxClose = document.getElementById("lightbox-close");
-const projectCards = document.querySelectorAll(".project-card");
-
-
-function openLightbox(card) {
-
-    if (!lightbox || !fullImg) {
-        return;
-    }
-
-    const imageURL = card.dataset.image;
-    const image = card.querySelector("img");
-
-    if (!image) {
-        return;
-    }
-
-    fullImg.src = imageURL || image.src;
-    fullImg.alt = image.alt || "";
-
-    lightbox.classList.add("active");
-
-    lightbox.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-    document.body.classList.add(
-        "modal-open"
-    );
-
-}
-
-
-function closeLightbox() {
-
-    if (!lightbox || !fullImg) {
-        return;
-    }
-
-    lightbox.classList.remove("active");
-
-    lightbox.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-    document.body.classList.remove(
-        "modal-open"
-    );
-
-    setTimeout(() => {
-
-        if (!lightbox.classList.contains("active")) {
-            fullImg.src = "";
-        }
-
-    }, 250);
-
-}
-
-
-projectCards.forEach(card => {
-
-    card.addEventListener(
-        "click",
-        () => {
-            openLightbox(card);
-        }
-    );
-
-    card.addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key === "Enter" ||
-                event.key === " "
-            ) {
-
-                event.preventDefault();
-                openLightbox(card);
-
-            }
-
-        }
-    );
-
-});
-
-
-if (fullImg) {
-
-    fullImg.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-            closeLightbox();
-
-        }
-    );
-
-}
-
-
-if (lightbox) {
-
-    lightbox.addEventListener(
-        "click",
-        event => {
-
-            if (event.target === lightbox) {
-                closeLightbox();
-            }
-
-        }
-    );
-
-}
-
-
-if (lightboxClose) {
-
-    lightboxClose.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-            closeLightbox();
-
-        }
-    );
-
-}
-
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Escape" &&
-            lightbox &&
-            lightbox.classList.contains("active")
-        ) {
-
-            closeLightbox();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   CONTACT FORM
-========================================================= */
-
-const contactForm =
-    document.getElementById("contact-form");
-
-const formStatus =
-    document.getElementById("form-status");
-
-if (contactForm) {
-
-    contactForm.addEventListener(
-        "submit",
-        function(event) {
-
-            event.preventDefault();
-
-            if (formStatus) {
-
-                formStatus.textContent =
-                    "Thanks — your project inquiry has been recorded. We'll get back to you shortly.";
-
-                formStatus.classList.add("show");
-
-            }
-
-            contactForm.reset();
-
-        }
-    );
-
-}
-
-
-/* =========================================================
    HERO VIDEO
-   STABLE DESKTOP + MOBILE VERSION
+   DESKTOP + LIGHTWEIGHT MOBILE VERSION
 ========================================================= */
 
 const heroVideo =
     document.getElementById("hero-video");
 
+
 if (heroVideo) {
+
+    /* -----------------------------------------------------
+       DETECT DEVICE
+    ----------------------------------------------------- */
+
+    const isMobile =
+        window.matchMedia("(max-width: 768px)").matches;
+
+
+    /* -----------------------------------------------------
+       SELECT VIDEO
+    ----------------------------------------------------- */
+
+    const selectedVideo = isMobile
+        ? "hero-video-mobile.mp4"
+        : "hero-video.mp4";
+
 
     /* -----------------------------------------------------
        VIDEO SETTINGS
@@ -334,54 +33,81 @@ if (heroVideo) {
     heroVideo.muted = true;
     heroVideo.defaultMuted = true;
     heroVideo.playsInline = true;
+    heroVideo.autoplay = true;
+    heroVideo.loop = true;
     heroVideo.controls = false;
 
-    heroVideo.setAttribute("muted", "");
-    heroVideo.setAttribute("playsinline", "");
-    heroVideo.setAttribute("webkit-playsinline", "");
+
+    heroVideo.setAttribute(
+        "muted",
+        ""
+    );
+
+    heroVideo.setAttribute(
+        "autoplay",
+        ""
+    );
+
+    heroVideo.setAttribute(
+        "loop",
+        ""
+    );
+
+    heroVideo.setAttribute(
+        "playsinline",
+        ""
+    );
+
+    heroVideo.setAttribute(
+        "webkit-playsinline",
+        ""
+    );
 
 
     /* -----------------------------------------------------
-       VIDEO STATE
+       LOAD CORRECT VIDEO
     ----------------------------------------------------- */
 
-    let videoStarted = false;
-    let userHasInteracted = false;
+    heroVideo.src = selectedVideo;
+
+    heroVideo.load();
 
 
     /* -----------------------------------------------------
        START VIDEO
     ----------------------------------------------------- */
 
-    function startHeroVideo() {
+    function playHeroVideo() {
 
         if (
-            document.visibilityState !== "visible"
+            document.visibilityState !==
+            "visible"
         ) {
             return;
         }
 
-        if (videoStarted) {
-            return;
-        }
 
         heroVideo.muted = true;
 
-        const playPromise = heroVideo.play();
 
-        if (playPromise !== undefined) {
+        const playPromise =
+            heroVideo.play();
 
-            playPromise
-                .then(() => {
 
-                    videoStarted = true;
+        if (
+            playPromise !== undefined
+        ) {
 
-                })
-                .catch(() => {
+            playPromise.catch(() => {
 
-                    videoStarted = false;
+                /*
+                   Autoplay may be blocked by
+                   the mobile browser.
 
-                });
+                   We do not continuously retry.
+                */
+
+            });
 
         }
 
@@ -389,43 +115,65 @@ if (heroVideo) {
 
 
     /* -----------------------------------------------------
-       INITIAL START
+       START WHEN VIDEO IS READY
     ----------------------------------------------------- */
 
-    if (heroVideo.readyState >= 3) {
+    if (
+        heroVideo.readyState >= 2
+    ) {
 
-        startHeroVideo();
+        playHeroVideo();
 
     } else {
 
         heroVideo.addEventListener(
-            "canplay",
-            startHeroVideo,
-            { once: true }
+            "loadeddata",
+            playHeroVideo,
+            {
+                once: true
+            }
         );
 
     }
 
 
+    heroVideo.addEventListener(
+        "canplay",
+        playHeroVideo,
+        {
+            once: true
+        }
+    );
+
+
     /* -----------------------------------------------------
-       USER INTERACTION FALLBACK
+       MOBILE USER-INTERACTION FALLBACK
     ----------------------------------------------------- */
 
-    function resumeHeroVideo() {
-
-        userHasInteracted = true;
+    const resumeHeroVideo = () => {
 
         if (
             heroVideo.paused &&
             !heroVideo.ended
         ) {
 
-            videoStarted = false;
-            startHeroVideo();
+            heroVideo.muted = true;
+
+            heroVideo.play().catch(() => {});
 
         }
 
-    }
+    };
+
+
+    document.addEventListener(
+        "touchstart",
+        resumeHeroVideo,
+        {
+            passive: true,
+            once: true
+        }
+    );
 
 
     document.addEventListener(
@@ -447,7 +195,8 @@ if (heroVideo) {
         () => {
 
             if (
-                document.visibilityState === "visible"
+                document.visibilityState ===
+                "visible"
             ) {
 
                 if (
@@ -455,12 +204,11 @@ if (heroVideo) {
                     !heroVideo.ended
                 ) {
 
-                    if (userHasInteracted) {
+                    heroVideo.muted = true;
 
-                        videoStarted = false;
-                        startHeroVideo();
-
-                    }
+                    heroVideo
+                        .play()
+                        .catch(() => {});
 
                 }
 
@@ -471,7 +219,7 @@ if (heroVideo) {
 
 
     /* -----------------------------------------------------
-       VIDEO ERROR HANDLING
+       VIDEO ERROR
     ----------------------------------------------------- */
 
     heroVideo.addEventListener(
@@ -479,37 +227,11 @@ if (heroVideo) {
         () => {
 
             console.warn(
-                "JohnGeo hero video could not be loaded."
+                "JohnGeo hero video failed to load:",
+                selectedVideo
             );
 
         }
     );
 
-
-    /* -----------------------------------------------------
-       VIDEO ENDED
-    ----------------------------------------------------- */
-
-    heroVideo.addEventListener(
-        "ended",
-        () => {
-
-            if (!heroVideo.loop) {
-
-                heroVideo.currentTime = 0;
-                videoStarted = false;
-                startHeroVideo();
-
-            }
-
-        }
-    );
-
 }
-
-
-/* =========================================================
-   INITIAL NAVIGATION UPDATE
-========================================================= */
-
-updateActiveNav();
