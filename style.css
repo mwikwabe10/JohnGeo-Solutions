@@ -46,24 +46,114 @@
 
     .nav-links a:hover { color: var(--gold); }
 
-    /* HERO SECTION */
-    .hero {
-        background: linear-gradient(rgba(26, 60, 52, 0.75), rgba(26, 60, 52, 0.75)), 
-                    url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1920&q=80');
-        background-size: cover;
-        background-position: center;
-        height: 70vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        color: var(--white);
-        padding: 0 10%;
-    }
+   /* =========================================================
+   HERO SECTION
+========================================================= */
 
-    .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 20px; }
+.hero {
+    position: relative;
+    height: 70vh;
+    min-height: 520px;
+    overflow: hidden;
 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    color: var(--white);
+
+    padding: 0 10%;
+
+    background: var(--forest-green);
+}
+
+
+/* =========================================================
+   HERO VIDEO BACKGROUND
+========================================================= */
+
+.hero-media {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    z-index: 0;
+
+    background: var(--forest-green);
+}
+
+
+.hero-media video {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 100%;
+    height: 100%;
+
+    transform: translate(-50%, -50%);
+
+    object-fit: cover;
+
+    display: block;
+
+    pointer-events: none;
+
+    background: var(--forest-green);
+}
+
+
+/* =========================================================
+   DARK OVERLAY
+========================================================= */
+
+.hero-media::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            rgba(26, 60, 52, 0.70),
+            rgba(26, 60, 52, 0.70)
+        );
+
+    z-index: 1;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.hero > *:not(.hero-media) {
+    position: relative;
+    z-index: 2;
+}
+.hero h1 {
+    font-size: clamp(
+        2.5rem,
+        5vw,
+        4rem
+    );
+    margin-bottom: 20px;
+}
+.hero p {
+    max-width: 850px;
+    margin: 0 auto 30px;
+    font-size: 1.1rem;
+}
     .btn {
         background: var(--gold);
         color: var(--forest-green);
@@ -75,17 +165,14 @@
         cursor: pointer;
         border: none;
     }
-
     /* SECTIONS */
     .section-padding { padding: 80px 10%; }
     .section-title { text-align: center; color: var(--forest-green); font-size: 2.5rem; margin-bottom: 40px; }
-
     .services-grid, .portfolio-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 20px;
     }
-
     .card {
         background: white;
         padding: 30px;
@@ -94,7 +181,6 @@
         border-top: 4px solid var(--gold);
         text-align: center;
     }
-
     /* PORTFOLIO ZOOM FIX */
     /* Removed height: 350px and cover to ensure maps show completely */
     .card img {
@@ -106,7 +192,6 @@
         cursor: zoom-in;
         background: #f9f9f9;
     }
-
     /* MODAL STYLES FOR ZOOM */
     .modal {
         display: none;
@@ -120,7 +205,6 @@
         background-color: rgba(0,0,0,0.9);
         cursor: zoom-out;
     }
-
     .modal-content {
         margin: auto;
         display: block;
@@ -128,7 +212,6 @@
         max-height: 85vh;
         object-fit: contain;
     }
-
     .close {
         position: absolute;
         top: 20px;
@@ -138,12 +221,73 @@
         font-weight: bold;
         cursor: pointer;
     }
-
     footer { background: #111; color: white; padding: 40px; text-align: center; }
 
-    @media (max-width: 768px) {
-        nav { flex-direction: column; padding: 15px 5%; }
-        .nav-links { margin-top: 20px; }
-        .nav-links a { margin: 0 10px; }
+   @media (max-width: 768px) {
+
+    nav {
+        flex-direction: column;
+        padding: 15px 5%;
     }
+    .nav-links {
+        margin-top: 20px;
+    }
+    .nav-links a {
+        margin: 0 10px;
+    }
+    /* =====================================================
+       MOBILE HERO
+    ===================================================== */
+
+    .hero {
+        height: 72vh;
+        min-height: 500px;
+
+        padding: 0 6%;
+    }
+    .hero-media {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .hero-media video {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        transform: translate(-50%, -50%);
+
+        /*
+           Prevent mobile browsers from treating
+           the video as an interactive element.
+        */
+        pointer-events: none;
+    }
+    .hero-media::after {
+        background:
+            linear-gradient(
+                rgba(26, 60, 52, 0.68),
+                rgba(26, 60, 52, 0.76)
+            );
+    }
+    .hero h1 {
+        font-size: clamp(
+            2rem,
+            9vw,
+            3rem
+        );
+        line-height: 1.1;
+        margin-bottom: 16px;
+    }
+    .hero p {
+        font-size: 0.98rem;
+
+        line-height: 1.6;
+
+        max-width: 95%;
+        margin-bottom: 24px;
+    }
+}
 </style>
