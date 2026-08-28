@@ -2883,27 +2883,26 @@ footer p{
 
     <div class="hero-media">
 
-        <video
-            autoplay
-            muted
-            loop
-            playsinline
-            webkit-playsinline
-            preload="auto"
-            disablepictureinpicture
-            controlslist="nodownload nofullscreen noremoteplayback"
-            aria-hidden="true"
-            tabindex="-1"
+    <video
+        id="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        webkit-playsinline
+        preload="metadata"
+        aria-hidden="true"
+        tabindex="-1"
+    >
+
+        <source
+            src="hero-video.mp4"
+            type="video/mp4"
         >
 
-            <source
-                src="https://www.pexels.com/download/video/35467097/"
-                type="video/mp4"
-            >
+    </video>
 
-        </video>
-
-    </div>
+</div>
 
 
     <!-- GRID -->
