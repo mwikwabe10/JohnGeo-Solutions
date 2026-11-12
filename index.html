@@ -5083,105 +5083,122 @@ updateActiveNav();
   aria-label="Submit a Complaint or Concern"
 >
   <span class="grm-button-icon">✉</span>
+
   <span class="grm-button-text">
     <strong>GRIEVANCES &amp; FEEDBACK</strong>
     <small>Submit a Complaint or Concern</small>
   </span>
+
   <span class="grm-button-arrow">↗</span>
 </a>
 
 <style>
+/* GRM BUTTON POSITION AND DESIGN */
 .grm-floating-button {
   position: fixed;
-  top: 12px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 99999;
 
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 7px;
 
-  padding: 10px 20px;
+  padding: 6px 12px;
   border: 1px solid rgba(237, 194, 123, 0.65);
-  border-radius: 50px;
+  border-radius: 30px;
 
   background: linear-gradient(135deg, #06131f, #0b2938);
   color: #ffffff;
   text-decoration: none;
 
-  box-shadow: 0 5px 22px rgba(0, 0, 0, 0.28),
-              0 0 14px rgba(36, 157, 134, 0.22);
-
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease;
   animation: grmGlow 3s infinite;
+
+  white-space: nowrap;
 }
 
+/* HOVER EFFECT */
 .grm-floating-button:hover {
   background: linear-gradient(135deg, #0b2938, #16799f);
   border-color: #edc27b;
-  box-shadow: 0 7px 26px rgba(0, 0, 0, 0.35),
-              0 0 20px rgba(36, 157, 134, 0.4);
   transform: translate(-50%, 2px);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* ICON */
 .grm-button-icon {
-  font-size: 23px;
+  font-size: 16px;
   color: #edc27b;
+  line-height: 1;
 }
 
+/* TEXT */
 .grm-button-text {
   display: flex;
   flex-direction: column;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .grm-button-text strong {
-  font-size: 12px;
-  letter-spacing: 0.8px;
+  font-size: 9px;
+  letter-spacing: 0.5px;
   color: #edc27b;
+  font-weight: 700;
 }
 
 .grm-button-text small {
-  font-size: 11px;
+  font-size: 8px;
   color: #ffffff;
   opacity: 0.9;
 }
 
+/* ARROW */
 .grm-button-arrow {
-  font-size: 18px;
+  font-size: 13px;
   color: #249d86;
+  line-height: 1;
 }
 
+/* SUBTLE GLOW ANIMATION */
 @keyframes grmGlow {
   0%, 100% {
-    box-shadow: 0 5px 22px rgba(0,0,0,0.28),
-                0 0 8px rgba(36,157,134,0.15);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25),
+                0 0 5px rgba(36, 157, 134, 0.15);
   }
+
   50% {
-    box-shadow: 0 5px 22px rgba(0,0,0,0.28),
-                0 0 17px rgba(36,157,134,0.4);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25),
+                0 0 13px rgba(36, 157, 134, 0.4);
   }
 }
 
+/* MOBILE RESPONSIVENESS */
 @media (max-width: 600px) {
   .grm-floating-button {
     top: 8px;
-    padding: 8px 13px;
-    gap: 8px;
-    max-width: calc(100% - 24px);
+    padding: 5px 10px;
+    gap: 6px;
+    max-width: calc(100% - 20px);
   }
 
   .grm-button-icon {
-    font-size: 19px;
+    font-size: 14px;
   }
 
   .grm-button-text strong {
-    font-size: 10px;
+    font-size: 8px;
   }
 
   .grm-button-text small {
-    font-size: 9px;
+    font-size: 7px;
+  }
+
+  .grm-button-arrow {
+    font-size: 11px;
   }
 }
 
