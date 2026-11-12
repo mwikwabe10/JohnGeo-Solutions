@@ -5079,80 +5079,184 @@ updateActiveNav();
   href="https://grm-platform-five.vercel.app/"
   target="_blank"
   rel="noopener noreferrer"
-  class="grm-button"
+  class="grm-floating-button"
+  aria-label="Grievances and Feedback - Submit a Complaint or Concern"
+  title="Submit a Complaint or Concern"
 >
-  <span>✉</span> Submit a Grievance
+  <span class="grm-button-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M4 5.5h16v13H4z"
+        stroke="currentColor" stroke-width="1.8"
+        stroke-linejoin="round"/>
+      <path d="m4.5 6 7.5 6 7.5-6"
+        stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </span>
+
+  <span class="grm-button-text">
+    <strong>GRIEVANCES &amp; FEEDBACK</strong>
+    <small>Submit a Complaint or Concern</small>
+  </span>
+
+  <span class="grm-button-arrow" aria-hidden="true">↗</span>
 </a>
 
 <style>
-
+/* ==========================================
+   GRM BUTTON DESIGN
+   ========================================== */
 
 .grm-floating-button {
   position: fixed;
   left: 22px;
   bottom: 25px;
-  right: auto;
   z-index: 99998;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+
+  padding: 12px 16px;
+  max-width: calc(100vw - 32px);
+
+  background: linear-gradient(135deg, #176B55, #104C3D);
+  border: 1px solid rgba(237,194,123,.8);
+  border-radius: 12px;
+
+  color: #ffffff !important;
+  text-decoration: none !important;
+
+  font-family: Arial, sans-serif;
+  box-shadow: 0 5px 20px rgba(0,0,0,.22);
+
+  transition: transform .25s ease,
+              background .25s ease,
+              box-shadow .25s ease;
+
+  animation: grmGlow 3s ease-in-out infinite;
+}
+
+/* Icon container */
+.grm-button-icon {
+  width: 39px;
+  height: 39px;
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
 
-  background: #176B55;
-  color: #ffffff;
-  padding: 14px 20px;
-  border-radius: 35px;
+  background: rgba(237,194,123,.15);
+  border: 1px solid rgba(237,194,123,.5);
+  border-radius: 9px;
 
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-
-  box-shadow: 0 0 0 0 rgba(23,107,85,.65);
-  animation: grmPulse 2s infinite;
-  transition: background .25s ease;
+  color: #EDC27B;
 }
 
-.grm-floating-button:hover {
-  background: #104C3D;
+.grm-button-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+/* Button label */
+.grm-button-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.grm-button-text strong {
+  color: #EDC27B;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .8px;
+}
+
+.grm-button-text small {
   color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Arrow */
+.grm-button-arrow {
+  color: #EDC27B;
+  font-size: 19px;
+  margin-left: 4px;
+}
+
+/* Hover effect */
+.grm-floating-button:hover {
+  background: linear-gradient(135deg, #249D86, #176B55);
+  color: #ffffff !important;
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 8px 25px rgba(23,107,85,.4);
+
   animation-play-state: paused;
 }
 
-.grm-button-icon {
-  font-size: 19px;
-}
+/* Gentle attention glow */
+@keyframes grmGlow {
+  0%, 100% {
+    box-shadow: 0 5px 20px rgba(0,0,0,.22),
+                0 0 0 rgba(36,157,134,0);
+  }
 
-@keyframes grmPulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(23,107,85,.65);
-    transform: scale(1);
-  }
-  70% {
-    box-shadow: 0 0 0 12px rgba(23,107,85,0);
-    transform: scale(1.04);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(23,107,85,0);
-    transform: scale(1);
+  50% {
+    box-shadow: 0 5px 20px rgba(0,0,0,.22),
+                0 0 16px rgba(36,157,134,.45);
   }
 }
 
-@media(max-width:600px) {
+/* ==========================================
+   MOBILE RESPONSIVENESS
+   ========================================== */
+
+@media (max-width: 600px) {
   .grm-floating-button {
     left: 12px;
     bottom: 15px;
-    padding: 12px 15px;
-    font-size: 12px;
+    gap: 8px;
+    padding: 9px 11px;
+    border-radius: 10px;
+  }
+
+  .grm-button-icon {
+    width: 33px;
+    height: 33px;
+  }
+
+  .grm-button-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .grm-button-text strong {
+    font-size: 9px;
+    letter-spacing: .5px;
+  }
+
+  .grm-button-text small {
+    font-size: 10px;
+  }
+
+  .grm-button-arrow {
+    font-size: 16px;
   }
 }
 
-@media(prefers-reduced-motion:reduce) {
+/* Accessibility: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
   .grm-floating-button {
     animation: none;
+    transition: none;
   }
 }
-
 
 </style>
   
