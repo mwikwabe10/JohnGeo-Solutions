@@ -5086,48 +5086,76 @@ updateActiveNav();
 
 <style>
 
-.grm-button {
+
+.grm-floating-button {
   position: fixed;
   left: 22px;
   bottom: 25px;
   right: auto;
-  z-index: 99999;
+  z-index: 99998;
+
   display: flex;
   align-items: center;
   gap: 10px;
+
   background: #176B55;
-  color: white;
-  padding: 15px 22px;
+  color: #ffffff;
+  padding: 14px 20px;
   border-radius: 35px;
-  font-size: 14px;
-  font-weight: 600;
+
   font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
   text-decoration: none;
-  box-shadow: 0 5px 20px rgba(0,0,0,.2);
-  transition: all .25s ease;
+
+  box-shadow: 0 0 0 0 rgba(23,107,85,.65);
+  animation: grmPulse 2s infinite;
+  transition: background .25s ease;
 }
 
-.grm-button:hover {
+.grm-floating-button:hover {
   background: #104C3D;
-  color: white;
-  transform: translateY(-3px);
+  color: #ffffff;
+  animation-play-state: paused;
+}
+
+.grm-button-icon {
+  font-size: 19px;
+}
+
+@keyframes grmPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(23,107,85,.65);
+    transform: scale(1);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(23,107,85,0);
+    transform: scale(1.04);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(23,107,85,0);
+    transform: scale(1);
+  }
 }
 
 @media(max-width:600px) {
-  .grm-button {
+  .grm-floating-button {
     left: 12px;
     bottom: 15px;
-    right: auto;
-    padding: 12px 16px;
+    padding: 12px 15px;
     font-size: 12px;
   }
 }
 
+@media(prefers-reduced-motion:reduce) {
+  .grm-floating-button {
+    animation: none;
+  }
+}
+
+
 </style>
-
-    
-
-
+  
 
 </body>
 </html>
