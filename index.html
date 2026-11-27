@@ -2429,6 +2429,34 @@
     .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; margin: 18px 0 4px; }
     .footer-nav a { color: var(--muted); text-decoration: none; font-family: var(--display); font-size: 0.92rem; transition: color 0.2s; }
     .footer-nav a:hover { color: var(--blue-bright); }
+
+    /* =========================================================
+       MOBILE FIXES
+    ========================================================= */
+    .hero-media video.hero-cover-video { display: none !important; }
+    @media (max-width: 760px) {
+      .section { perspective: none; padding: 72px 5%; }
+      .card-depth, .glass-stage, .hero-glass-stage { transform: none !important; }
+      #home { padding: 120px 5% 80px; min-height: 0; }
+      .grievance-float-btn { padding: 9px 12px; font-size: 0.68rem; }
+      .whatsapp-float-btn { transform: scale(0.88); transform-origin: bottom right; }
+      #back-to-top { right: 16px; bottom: 84px; width: 42px; height: 42px; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      img, video, canvas { max-width: 100%; }
+    }
+
+    /* =========================================================
+       SMOOTH HERO: cheaper glass blur over the animated cover
+    ========================================================= */
+    /* Blur over a constantly moving background is re-computed every frame and is what
+       made the cover stutter, so the hero area uses solid glass tints instead. */
+    header, .hero-glass-stage, .hero-orbital-hud, #home .card-depth {
+      -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+    }
+    header { background: var(--glass-bg-strong) !important; }
+    .hero-glass-stage, .hero-orbital-hud, #home .card-depth { background: var(--glass-bg-strong) !important; }
+    .card-depth { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+    #hero-cover-canvas { transform: translateZ(0); }
   </style>
 </head>
 
@@ -2488,7 +2516,7 @@
   <section id="home">
     <div class="hero-media" aria-hidden="true">
       <canvas id="hero-cover-canvas" class="hero-cover-canvas"></canvas>
-      <video id="hero-cover-video" class="hero-cover-video" autoplay loop muted playsinline></video>
+      <video id="hero-cover-video" class="hero-cover-video" muted playsinline hidden></video>
     </div>
 
     <div class="grid-texture"></div>
@@ -3164,7 +3192,7 @@
           <i class="fa-solid fa-xmark"></i>
         </button>
         <canvas id="lightbox-canvas"></canvas>
-        <img id="lightbox-photo" class="is-hidden" alt="" />
+        <img id="lightbox-photo" class="is-hidden" alt="" referrerpolicy="no-referrer" />
       </div>
 
       <div class="lightbox-body">
@@ -3461,28 +3489,37 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
+      const heroEl = canvas.closest('section') || document.documentElement;
       function resize() {
-        canvas.width = Math.max(960, Math.min(1920, window.innerWidth));
-        canvas.height = Math.max(540, Math.min(1080, window.innerHeight));
+        const w = heroEl.clientWidth || window.innerWidth;
+        const h = heroEl.clientHeight || window.innerHeight;
+        // Draw at a capped size (the browser scales it up) to keep every frame cheap.
+        const k = Math.min(1, 1100 / Math.max(w, 1), 720 / Math.max(h, 1));
+        canvas.width = Math.max(320, Math.round(w * k));
+        canvas.height = Math.max(400, Math.round(h * k));
       }
       resize();
       window.addEventListener('resize', resize);
 
-      if (videoEl && typeof canvas.captureStream === 'function') {
-        try {
-          const stream = canvas.captureStream(30);
-          videoEl.srcObject = stream;
-          videoEl.play().catch(() => {
-            videoEl.style.display = 'none';
-          });
-        } catch (_) {
-          videoEl.style.display = 'none';
-        }
-      } else if (videoEl) {
-        videoEl.style.display = 'none';
-      }
+      // The animated canvas is shown directly. The captureStream video is
+      // blank on many phones and used to cover the canvas, so it stays hidden.
+      if (videoEl) videoEl.style.display = 'none';
 
       const start = performance.now();
+
+      let raf = 0, lastDraw = 0, running = true;
+      const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function loop(now) {
+        raf = 0;
+        if (!running || document.hidden) return;
+        if (now - lastDraw >= 32) { lastDraw = now; drawFrame(now); }
+        if (!calm) raf = requestAnimationFrame(loop);
+      }
+      function kick() { if (!raf && running && !document.hidden) raf = requestAnimationFrame(loop); }
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((e) => { running = e[0].isIntersecting; kick(); }).observe(heroEl);
+      }
+      document.addEventListener('visibilitychange', kick);
 
       function drawFrame(now) {
         const t = (now - start) * 0.001;
@@ -3629,11 +3666,9 @@
         ctx.fill();
 
         ctx.restore();
-
-        requestAnimationFrame(drawFrame);
       }
 
-      requestAnimationFrame(drawFrame);
+      kick();
     })();
 
     // ---------------------------------------------------------
@@ -3865,6 +3900,7 @@
         imgEl.classList.remove('is-hidden');
       };
       imgEl.onerror = () => {
+        console.warn('Project photo could not load:', resolved);
         imgEl.classList.add('is-hidden');
         imgEl.removeAttribute('src');
       };
@@ -3891,7 +3927,7 @@
           <div class="project-image">
             <div class="scan"></div>
             <canvas></canvas>
-            <img class="project-photo is-hidden" alt="" />
+            <img class="project-photo is-hidden" alt="" referrerpolicy="no-referrer" />
             <span class="project-plate-badge">${proj.plateTag}</span>
           </div>
           <div class="project-content">
